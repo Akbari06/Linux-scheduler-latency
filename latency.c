@@ -7,6 +7,7 @@
 // function declaration
 long diff_nanoseconds(struct timespec start, struct timespec end);
 int cmp_long(const void *a, const void *b);
+long now_ns(void);
 
 int main(void) {
     
@@ -16,12 +17,17 @@ int main(void) {
     struct timespec req = {0, 1000000}; // 1 ms
 
     for (int i = 0; i < 10000; i++) {
-        clock_gettime(CLOCK_MONOTONIC, &start);
-        nanosleep(&req, NULL);
-        clock_gettime(CLOCK_MONOTONIC, &end);
 
-        long elapsed_ns = diff_nanoseconds(start, end);
-        samples[i] = elapsed_ns - 1000000; // jitter
+        long start_ns = now_ns();
+
+        while (now_ns() - start_ns < 1000000){
+            // busy wait for 1ms
+        }
+
+        long end_ns = now_ns();
+
+        samples[i] = end_ns - start_ns - 1000000; // jitter
+
     }
 
     qsort(samples, N, sizeof(long), cmp_long);
@@ -35,6 +41,12 @@ int main(void) {
     printf("p99: %ld ns\n", p99);
 
     return 0;
+}
+
+long now_ns(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec * 1000000000L + ts.tv_nsec;
 }
 
 int cmp_long(const void *a, const void *b) {
