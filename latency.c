@@ -2,10 +2,24 @@
 #include <time.h>
 
 int main(void) {
-    struct timespec ts;
+    struct timespec start, end;
+    struct timespec req = {0, 1000000}; // 1 ms
 
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    printf("Seconds: %ld, Nanoseconds: %ld\n", ts.tv_sec, ts.tv_nsec);
+    for (int i = 0; i < 10000; i++); {
+
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        nanosleep(&req, NULL);
+        clock_gettime(CLOCK_MONOTONIC, &end);
+
+        long elapsed_ns = diff_nanoseconds(start, end);
+        printf("%ld\n", elapsed_ns - 1000000); // Print the difference from requested time
+    }// Warm-up loop
+    
+
+    long elapsed_ns = diff_nanoseconds(start, end);
+
+    printf("Requested: 1000000 ns\n");
+    printf("Actual:    %ld ns\n", elapsed_ns);
 
     return 0;
 }
