@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #define N 10000
 
 // function declaration
@@ -11,6 +12,10 @@ long now_ns(void);
 
 int main(void) {
     
+    cpu_set_t set;
+    CPU_ZERO(&set);
+    CPU_SET(0, &set);
+    sched_setaffinity(0, sizeof(set), &set);
     long samples[N];
 
     struct timespec start, end;
@@ -36,9 +41,15 @@ int main(void) {
     long p90 = samples[(int)(N * 0.90)];
     long p99 = samples[(int)(N * 0.99)];
 
-    printf("p50: %ld ns\n", p50);
-    printf("p90: %ld ns\n", p90);
-    printf("p99: %ld ns\n", p99);
+    FILE *f = fopen("busy_wait.csv", "w");
+    fprintf(f, "jitter_ns\n");
+
+    for (int i = 0; i < N; i++) {
+        fprintf(f, "%ld\n", samples[i]);
+    }
+
+fclose(f);
+
 
     return 0;
 }
