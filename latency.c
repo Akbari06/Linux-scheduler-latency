@@ -6,12 +6,13 @@
 #define N 10000
 
 // function declaration
-long diff_nanoseconds(struct timespec start, struct timespec end);
+// long diff_nanoseconds(struct timespec start, struct timespec end);
 int cmp_long(const void *a, const void *b);
 long now_ns(void);
 
 int main(void) {
-    
+    int busy_wait = 1; // Set to 1 for busy-wait, 0 for nanosleep, means program spins on the cpu instead of sleeping
+
     cpu_set_t set;
     CPU_ZERO(&set);
     CPU_SET(0, &set);
@@ -21,19 +22,29 @@ int main(void) {
     struct timespec start, end;
     struct timespec req = {0, 1000000}; // 1 ms
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < N; i++) {
+        if (busy_wait) {
 
-        long start_ns = now_ns();
+            long start_ns = now_ns();
 
-        while (now_ns() - start_ns < 1000000){
-            // busy wait for 1ms
+            while (now_ns() - start_ns < 1000000) {
+                // busy-wait loop
+            }
+
+            long end_ns = now_ns();
+
+            samples[i] = end_ns - start_ns - 1000000;
+
+        } else {
+
+            clock_gettime(CLOCK_MONOTONIC, &start);
+            nanosleep(&req, NULL);
+            clock_gettime(CLOCK_MONOTONIC, &end);
+            samples[i] = diff_nanoseconds(start, end) - 1000000;
+
         }
+}
 
-        long end_ns = now_ns();
-
-        samples[i] = end_ns - start_ns - 1000000; // jitter
-
-    }
 
     qsort(samples, N, sizeof(long), cmp_long);
 
@@ -48,7 +59,7 @@ int main(void) {
         fprintf(f, "%ld\n", samples[i]);
     }
 
-fclose(f);
+    fclose(f);
 
 
     return 0;
@@ -66,10 +77,10 @@ int cmp_long(const void *a, const void *b) {
     return (la > lb) - (la < lb);
 }
 
-long diff_nanoseconds(struct timespec start, struct timespec end) {
-    long seconds_diff = end.tv_sec - start.tv_sec;
-    long nanoseconds_diff = end.tv_nsec - start.tv_nsec;
+// long diff_nanoseconds(struct timespec start, struct timespec end) {
+//     long seconds_diff = end.tv_sec - start.tv_sec;
+//     long nanoseconds_diff = end.tv_nsec - start.tv_nsec;
 
-    return seconds_diff * 1000000000L + nanoseconds_diff;
-}
+//     return seconds_diff * 1000000000L + nanoseconds_diff;
+// }
     
