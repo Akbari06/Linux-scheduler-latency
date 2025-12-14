@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define N 10000;
+#define N 10000
 
 // function declaration
 long diff_nanoseconds(struct timespec start, struct timespec end);
+int cmp_long(const void *a, const void *b);
 
 int main(void) {
     
@@ -23,20 +24,20 @@ int main(void) {
         samples[i] = elapsed_ns - 1000000; // jitter
     }
 
-    qsort(samples,N, sizeof(long), cpm_long);
+    qsort(samples, N, sizeof(long), cmp_long);
 
     long p50 = samples[(int)(N * 0.5)];
-    long p90 = samples[(int)(N * 90)];
+    long p90 = samples[(int)(N * 0.90)];
     long p99 = samples[(int)(N * 0.99)];
 
     printf("p50: %ld ns\n", p50);
     printf("p90: %ld ns\n", p90);
     printf("p99: %ld ns\n", p99);
-    
+
     return 0;
 }
 
-int cpm_long(const void *a, const void *b) {
+int cmp_long(const void *a, const void *b) {
     long la = *(const long *)a;
     long lb = *(const long *)b;
     return (la > lb) - (la < lb);
@@ -48,3 +49,4 @@ long diff_nanoseconds(struct timespec start, struct timespec end) {
 
     return seconds_diff * 1000000000L + nanoseconds_diff;
 }
+    
