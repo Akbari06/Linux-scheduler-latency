@@ -14,3 +14,12 @@ In Linux, CLOCK_MONOTONIC_RAW is an example, cause it measures elapsed time dire
 
 By repeating this many times, the benchmark captures scheduler latency and jitter, showing real wake up times rather than just the avg. delay.
 
+## How to run?
+
+git clone https://github.com/yourusername/Linux-scheduler-latency.git
+
+cd Linux-scheduler-latency
+
+gcc -O2 latency.c -o latency #Compiles with Optimisation enabled using the -O2
+
+./ latency
