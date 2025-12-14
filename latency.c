@@ -9,3 +9,10 @@ int main(void) {
 
     return 0;
 }
+
+long diff_nanoseconds(struct timespec start, struct timespec end) {
+    long seconds_diff = end.tv_sec - start.tv_sec;
+    long nanoseconds_diff = end.tv_nsec - start.tv_nsec;
+
+    return seconds_diff * 1000000000L + nanoseconds_diff;
+}
