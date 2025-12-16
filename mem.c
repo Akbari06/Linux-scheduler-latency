@@ -11,6 +11,6 @@ long *alloc_samples(size_t n) {
     return samples;
 }
 
-void free_samples(long *samples) {
+void free_samples(long *samples){
     free(samples);
 }
