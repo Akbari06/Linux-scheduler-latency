@@ -46,23 +46,19 @@ If CPU affinity is restricted to a single core, threads run concurrently but not
 
 ## Build and use
 
-Build the static library and the example:
+Build the static library and example program:
 
-```
-make            # builds libschedlat.a and examples/basic
-make clean      # removes build artifacts
-```
+make
+make clean
 
-Manual commands, if you prefer:
+Manual build commands:
 
-```
-gcc -Isrc -Iinclude -pthread -c src/*.c   # compile source files to .o objects
-ar rcs libschedlat.a build/*.o            # create the static library archive
-gcc your_app.c -Iinclude -L. -lschedlat -pthread -o your_app  # link your app
-```
+gcc -Isrc -Iinclude -pthread -c src/*.c
+ar rcs libschedlat.a build/*.o
+gcc your_app.c -Iinclude -L. -lschedlat -pthread -o your_app
 
-What the commands mean:
+What these commands do:
 
-- `gcc -c src/*.c` compiles each C source file into an object file (.o) without linking.
-- `ar rcs libschedlat.a *.o` packs those objects into a static archive named `libschedlat.a`.
-- `gcc app.c -L. -lschedlat -pthread` tells the compiler to build `app.c`, search the current directory for libraries (`-L.`), link against `libschedlat.a` (`-lschedlat`), and pull in pthread support (`-pthread`).
+• The compiler step produces object files without linking
+• The archive step packages the objects into a static library
+• The final command links your application against the library and pthread support
