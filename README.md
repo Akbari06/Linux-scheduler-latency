@@ -36,11 +36,11 @@ Running with multiple threads increases scheduler pressure and typically results
 
 ## What this project cannot do
 
-• It does not guarantee real time scheduling
-• It does not measure hard real time deadlines
+• It does not guarantee realtime scheduling
+• It does not measure hard realtime deadlines
 • It does not ensure parallel execution unless multiple CPU cores are available
 • It does not isolate kernel scheduling from other system activity
-• It does not model I O or interrupt driven workloads
+• It does not model IO or interrupt driven workloads
 
 If CPU affinity is restricted to a single core, threads run concurrently but not in parallel.
 
