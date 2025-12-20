@@ -62,3 +62,9 @@ What these commands do:
 • The compiler step produces object files without linking
 • The archive step packages the objects into a static library
 • The final command links your application against the library and pthread support
+
+## Intended Use
+
+This library is designed to be embedded into other C codebases to measure Linux scheduler latency under controlled workloads.
+
+It returns raw timing data and does not perform logging, plotting, or analysis. This allows users to integrate it into benchmarking frameworks, research experiments, or performance sensitive systems.
