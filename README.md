@@ -8,21 +8,21 @@ The experiment can be run using a single thread or multiple threads to observe h
 
 ## What is a high resolution monotonic clock?
 
-It is simply a system clock that moves strictly forward and provide very fine time measurements (typically nanoseconds).
+A high resolution monotonic clock always moves forward and provides very fine grained time measurements, typically in nanoseconds.
 
-It isn't affected by system time changes such as NTP updates (corrects the computer's wall time by synchronising with internet time servers which can cause time jumps that monotonic clocks ignore) or manual clock adjustments.
+It is not affected by system time changes such as NTP synchronisation or manual clock adjustments. This makes it suitable for benchmarking scheduling latency.
 
-In Linux, CLOCK_MONOTONIC_RAW is an example, cause it measures elapsed time directly from the hardware time, making it ideal for benchmarking latency and jitter without messing changing from clock correction.
+On Linux, CLOCK_MONOTONIC_RAW measures elapsed time directly from hardware and avoids distortions caused by clock correction. This makes it ideal for latency and jitter analysis.
 
-By repeating this many times, the benchmark captures scheduler latency and jitter, showing real wake up times rather than just the avg. delay.
+By repeating the measurement many times, the library captures the full distribution of scheduler delays rather than only an average value.
 
 ## Threaded Execution
 
-When you run multiple threads, each thread independently requests the same delay and records its own wake up latency times.
+When running with multiple threads, each thread independently requests the same delay and records its own wake up latency samples.
 
-Threads same the same CPU resources and compete for execution time. This exposes how Linux sheduler time slices between runnable threads and how contention affects wake up accuracy.
+Threads share the same CPU resources and compete for execution time. This exposes how the Linux scheduler time slices between runnable threads and how contention affects wake up accuracy.
 
-This program does not use locks because each thread writes its own memory region. Any observed variation in timing is therefore caused by sheduling behaviour rather than synchronisation overhead.
+The library does not use locks because each thread writes to its own memory region. Any observed timing variation is therefore caused by scheduling behaviour rather than synchronisation overhead.
 
 Running with multiple threads increases scheduler pressure and typically results in higher latency and jitter compared to single thread execution.
 
