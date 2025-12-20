@@ -44,12 +44,25 @@ Running with multiple threads increases scheduler pressure and typically results
 
 If CPU affinity is restricted to a single core, threads run concurrently but not in parallel.
 
-## How to run?
+## Build and use
 
-git clone https://github.com/yourusername/Linux-scheduler-latency.git
+Build the static library and the example:
 
-cd Linux-scheduler-latency
+```
+make            # builds libschedlat.a and examples/basic
+make clean      # removes build artifacts
+```
 
-gcc -O2 main.c -o main #Compiles with Optimisation enabled using the -O2
+Manual commands, if you prefer:
 
-./ main
+```
+gcc -Isrc -Iinclude -pthread -c src/*.c   # compile source files to .o objects
+ar rcs libschedlat.a build/*.o            # create the static library archive
+gcc your_app.c -Iinclude -L. -lschedlat -pthread -o your_app  # link your app
+```
+
+What the commands mean:
+
+- `gcc -c src/*.c` compiles each C source file into an object file (.o) without linking.
+- `ar rcs libschedlat.a *.o` packs those objects into a static archive named `libschedlat.a`.
+- `gcc app.c -L. -lschedlat -pthread` tells the compiler to build `app.c`, search the current directory for libraries (`-L.`), link against `libschedlat.a` (`-lschedlat`), and pull in pthread support (`-pthread`).
