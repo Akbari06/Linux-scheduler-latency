@@ -1,10 +1,10 @@
 # Linux-scheduler-latency
 
-This project measures how accurately the Linux scheduler wakes up threads after a requested delay.
+This project provides a C library for measuring how accurately the Linux scheduler wakes up threads after a requested delay.
 
-The program repeatedly requests a precise delay of one millisecond and measures the actual time until execution resumes. The difference between the requested delay and the observed wake up time is recorded as scheduler latency or jitter.
+The library repeatedly requests a precise delay of one millisecond and measures the actual time until execution resumes. The difference between the requested delay and the observed wake up time is recorded as scheduler latency or jitter.
 
-The experiment can be run using a single thread or multiple threads to observe how Linux schedules concurrent execution.
+The experiment can be run using a single thread or multiple threads to observe how Linux schedules concurrent execution under different levels of contention.
 
 ## What is a high resolution monotonic clock?
 
