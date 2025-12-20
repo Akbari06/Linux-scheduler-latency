@@ -1,12 +1,21 @@
-#define _POSIX_C_SOURCE 200809L
-#include "thread.h"
+#define _GNU_SOURCE
+#include <pthread.h>
+#include <sched.h>
 #include <time.h>
 
-long now_ns(void);
+#include "schedlat_time.h"
+#include "thread.h"
 
 void *worker(void *arg) {
     thread_arg_t *t = arg;
     struct timespec req = {0, 1000000};
+
+    if (t->pin_single_cpu) {
+        cpu_set_t cpus;
+        CPU_ZERO(&cpus);
+        CPU_SET(0, &cpus);
+        pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
+    }
 
     for (size_t i = 0; i < t->num_samples; i++) {
         long start_ns = now_ns();
