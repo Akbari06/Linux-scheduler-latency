@@ -50,6 +50,6 @@ git clone https://github.com/yourusername/Linux-scheduler-latency.git
 
 cd Linux-scheduler-latency
 
-gcc -O2 latency.c -o latency #Compiles with Optimisation enabled using the -O2
+gcc -O2 main.c -o main #Compiles with Optimisation enabled using the -O2
 
-./ latency
+./ main
